@@ -13,6 +13,7 @@ Numpy – Numpy arrays are very fast and can perform large computations in a ver
 Matplotlib/Seaborn – This library is used to draw visualizations.
 Sklearn – This module contains multiple libraries are having pre-implemented functions to perform tasks from data preprocessing to model development and evaluation.
 XGBoost – This contains the eXtreme Gradient Boosting machine learning algorithm which is one of the algorithms which helps us to achieve high accuracy on predictions.
+ ```python
 import numpy as np 
 import pandas as pd 
 import matplotlib.pyplot as plt 
@@ -38,12 +39,12 @@ Output:
 
 First five rows of the dataset.
  
-
+```
 As we can see we have data for five years for 10 stores and 50 products so, if we calculate it,
 
 (365 * 4 + 366) * 10 * 50 = 913000
 Now let’s check the size we have calculated is correct or not .
-
+ ```python
 df.shape
 Output:
 
@@ -52,35 +53,35 @@ Let’s check which column of the dataset contains which type of data.
 
 df.info()
 Output:
-
+```
 Information regarding data in the columns
  
 
 As per the above information regarding the data in each column we can observe that there are no null values.
-
+ ```python
 df.describe()
 Output:
-
+```
 Descriptive statistical measures of the dataset
-Descriptive statistical measures of the dataset
+ 
 
 # Feature Engineering
 
 There are times when multiple features are provided in the same feature or we have to derive some features from the existing ones. We will also try to include some extra features in our dataset so, that we can derive some interesting insights from the data we have. Also if the features derived are meaningful then they become a deciding factor in increasing the model’s accuracy significantly.
 
-
+ ```python
 parts = df["date"].str.split("-", n = 3, expand = True) 
 df["year"]= parts[0].astype('int') 
 df["month"]= parts[1].astype('int') 
 df["day"]= parts[2].astype('int') 
 df.head()
-Output:
+```
 
 Addition of day, month, and year feature
  
 
 Whether it is a weekend or a weekday must have some effect on the requirements to fulfill the demands.
-
+ ```python
 from datetime import datetime 
 import calendar 
       
@@ -91,15 +92,15 @@ def weekend_or_weekday(year,month,day):
         return 1
     else: 
         return 0
-  
+ 
 df['weekend'] = df.apply(lambda x:weekend_or_weekday(x['year'], x['month'], x['day']), axis=1) 
 df.head()
-Output:
+```
 
  
 
 It would be nice to have a column which can indicate whether there was any holiday on a particular day or not.
-
+ ```python
 from datetime import date 
 import holidays 
   
@@ -114,11 +115,11 @@ def is_holiday(x):
   
 df['holidays'] = df['date'].apply(is_holiday) 
 df.head()
-Output:
+```
 
 
 Addition of a holiday feature
-
+ ```python
 Now, let’s add some cyclical features.
 
 df['m1'] = np.sin(df['month'] * (2 * np.pi / 12)) 
@@ -141,21 +142,21 @@ df['weekday'] = df.apply(lambda x: which_day(x['year'],
                                                       x['day']), 
                                    axis=1) 
 df.head()
-Output:
-
+````
 Addition of weekday Features
  
 
 Now let’s remove the columns which are not useful for us.
-
+ ```python
 df.drop('date', axis=1, inplace=True)
+```
 There may be some other relevant features as well which can be added to this dataset but let’s try to build a build with these ones and try to extract some insights as well.
 
 # Exploratory Data Analysis
 EDA is an approach to analyzing the data using visual techniques. It is used to discover trends, and patterns, or to check assumptions with the help of statistical summaries and graphical representations. 
 
 We have added some features to our dataset using some assumptions. Now let’s check what are the relations between different features with the target feature.
-
+ ```python
 df['store'].nunique(), df['item'].nunique()
 Output:
 
@@ -201,13 +202,13 @@ data['sales'].plot()
 sma.plot() 
 plt.legend() 
 plt.show()
-Output:
+```
 
 
  
 
 As the data in the sales column is continuous let’s check the distribution of it and check whether there are some outliers in this column or not.
-
+ ```python
 plt.subplots(figsize=(12, 5)) 
 plt.subplot(1, 2, 1) 
 sb.distplot(df['sales']) 
@@ -217,20 +218,17 @@ sb.boxplot(df['sales'])
 plt.show() 
 Output:
 
-
+  ```
 # Distribution plot and Box plot for the target column
 
 Highly correlated features do
-
+ ```python
 plt.figure(figsize=(10, 10)) 
 sb.heatmap(df.corr() > 0.8, 
            annot=True, 
            cbar=False) 
 plt.show() 
-Output:
-
-Heatmap to detect the highly correlated features
-Heatmap to detect the highly correlated features
+````
 
 As we observed earlier let’s remove the outliers which are present in the data.
 
@@ -240,7 +238,7 @@ df = df[df['sales']<140]
 # Model Training
 
 Now we will separate the features and target variables and split them into training and the testing data by using which we will select the model which is performing best on the validation data.
-
+ ```python
 features = df.drop(['sales', 'year'], axis=1) 
 target = df['sales'].values 
   
@@ -273,6 +271,7 @@ for i in range(4):
     val_preds = models[i].predict(X_val) 
     print('Validation Error : ', mae(Y_val, val_preds)) 
     print() 
+```
 Output:
 
 LinearRegression() : 
